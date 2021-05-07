@@ -59,6 +59,16 @@ public class ServerSend
         }
     }
 
+    public static void QueuePop(int _toClient, string _opponentUsername, int _port){
+        using (Packet _packet = new Packet((int)ServerPackets.queuePop))
+        {
+            _packet.Write(_opponentUsername);
+            _packet.Write(_port);
+
+            SendTCPData(_toClient, _packet);
+        }
+    }
+
     public static void SpawnPlayer(int _toClient, Player _player){
         using (Packet _packet = new Packet((int)ServerPackets.spawnPlayer))
         {
@@ -140,7 +150,6 @@ public class ServerSend
     }
 
     public static void ItemPickedUp(int _spawnerId, int _byPlayer){
-        Debug.Log("ItemPickedUp called");
         using (Packet _packet = new Packet((int)ServerPackets.itemPickedUp))
         {
             _packet.Write(_spawnerId);
@@ -151,7 +160,6 @@ public class ServerSend
     }
 
     public static void SpawnProjectile(Projectile _projectile, int _thrownByPlayer){
-        Debug.Log("SpawnProjectile called");
         using(Packet _packet = new Packet((int)ServerPackets.spawnProjectile))
         {
             _packet.Write(_projectile.id);

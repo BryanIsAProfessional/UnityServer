@@ -32,7 +32,6 @@ public class ServerHandle
     }
 
     public static void PlayerThrowItem(int _fromClient, Packet _packet){
-        Debug.Log("PlayerThrowItem called");
         Vector3 _throwDirection = _packet.ReadVector3();
 
         Server.clients[_fromClient].player.ThrowItem(_throwDirection);

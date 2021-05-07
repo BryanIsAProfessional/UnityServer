@@ -14,12 +14,21 @@ public class Server
     public static Dictionary<int, Client> clients = new Dictionary<int, Client>();
     public delegate void PacketHandler(int _fromClient, Packet _packet);
     public static Dictionary<int, PacketHandler> packetHandlers;
-    public static void Start(int _maxPlayers, int _port)
+    public static void Start(int _maxPlayers, int _fallbackPort)
     {
         MaxPlayers = _maxPlayers;
-        Port = _port;
 
-        Debug.Log("Starting server");
+        string argPort = GetArg("port");
+        if(argPort == null){
+            Debug.Log("NOT passed a port");
+            Port = _fallbackPort;
+        }else{
+            Debug.Log("passed a port");
+            Port = Int32.Parse(argPort);
+        }
+        
+
+        Debug.Log($"Starting server on port {Port}");
         InitializeServerData();
 
         tcpListener = new TcpListener(IPAddress.Any, Port);
@@ -29,10 +38,7 @@ public class Server
         udpListener = new UdpClient(Port);
         udpListener.BeginReceive(UDPReceiveCallback, null);
 
-
-        Debug.Log($"Server started on {Port}.");
-
-
+        Debug.Log($"Server started on port {Port}.");
     }
 
     private static void TCPConnectCallback(IAsyncResult _result)
@@ -101,6 +107,7 @@ public class Server
         packetHandlers = new Dictionary<int, PacketHandler>()
         {
             { (int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived },
+            { (int)ClientPackets.queue, null },
             { (int)ClientPackets.playerMovement, ServerHandle.PlayerMovement },
             { (int)ClientPackets.playerShoot, ServerHandle.PlayerShoot },
             { (int)ClientPackets.playerThrowItem, ServerHandle.PlayerThrowItem }
@@ -111,5 +118,18 @@ public class Server
     public static void Stop(){
         tcpListener.Stop();
         udpListener.Close();
+    }
+
+    private static string GetArg(string name)
+    {
+        var args = System.Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == name && args.Length > i + 1)
+            {
+                return args[i + 1];
+            }
+        }
+        return null;
     }
 }

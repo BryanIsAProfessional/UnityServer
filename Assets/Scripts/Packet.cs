@@ -9,6 +9,7 @@ using System.Numerics;
 public enum ServerPackets
 {
     welcome = 1,
+    queuePop,
     spawnPlayer,
     playerPosition,
     playerRotation,
@@ -27,6 +28,7 @@ public enum ServerPackets
 public enum ClientPackets
 {
     welcomeReceived = 1,
+    queue,
     playerMovement,
     playerShoot,
     playerThrowItem

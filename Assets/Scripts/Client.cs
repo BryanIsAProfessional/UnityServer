@@ -170,7 +170,11 @@ public class Client
             endPoint = null;
         }
     }
-    
+
+    public void RemoveFromQueue(){
+        Debug.Log($"Removing player {id} from queue");
+    }
+
     public void SendIntoGame(string _playerName){
         player = NetworkManager.instance.InstantiatePlayer();
         player.Initialize(id, _playerName);
